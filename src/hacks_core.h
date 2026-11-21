@@ -98,6 +98,8 @@ private:
     void OnHookMouseMove(LPMSG msg);
     void OnHookLButtonDown(LPMSG msg);
     void OnHookLButtonDblClk(LPMSG msg);
+    void StartCaptionMove(POINT pt);
+    void EndCaptionDrag();
 
 private:
     HWND mMainWindow = nullptr;
@@ -117,4 +119,20 @@ private:
     bool mMaximizedBeforeFullscreen = false;
     bool mRequireRevertCursor = false;
     bool mUsedCompositedStyle = false;
+
+    // MOD patch: drag the pseudo-caption to the top edge of the monitor to maximize
+    bool mCaptionDragActive = false;
+    int32_t mCaptionDragStartY = 0;
+    bool mDragToTopPending = false;
+    bool mCaptionArmed = false;
+    POINT mCaptionPressPt = {};
+
+    // MOD patch: last window rect the user treated as a normal window. Used as a
+    // fallback when the persisted maximize state carries a damaged normal rect.
+    RECT mLastNormalRect = {};
+    bool mHasLastNormalRect = false;
+
+    // MOD patch: our own caption drag loop (replaces the native SC_MOVE loop)
+    RECT mDragAnchorRect = {};
+    POINT mDragAnchorCursor = {};
 };
